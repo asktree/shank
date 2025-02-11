@@ -24,6 +24,7 @@ impl RustType {
                     BTreeMap => todo!("Render BTreeMap composite"),
                     HashSet => todo!("Render HashSet composite"),
                     BTreeSet => todo!("Render BTreeSet composite"),
+                    Decimal => todo!("Render Decimal composite"),
                     Custom(_) => todo!("Render Custom composite"),
                 }
             }

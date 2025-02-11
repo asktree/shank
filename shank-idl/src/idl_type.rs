@@ -164,6 +164,19 @@ impl TryFrom<RustType> for IdlType {
                         )
                     }
                 },
+                Composite::Decimal => {
+                    // Decimal<const P: u8, T> where T: Copy + PartialEq + Eq + Debug
+                    // We only care about the inner type (second generic parameter)
+                    if inners.len() == 1 {
+                        let inner_type = inners[0].clone();
+                        inner_type.try_into()?
+                    } else {
+                        anyhow::bail!(
+                            "Decimal composite needs one type parameter, got {}",
+                            inners.len()
+                        )
+                    }
+                }
                 Composite::Custom(_) => {
                     anyhow::bail!(
                         "Rust Custom Composite IDL type not yet supported"
@@ -172,7 +185,7 @@ impl TryFrom<RustType> for IdlType {
             },
             TypeKind::Unit => anyhow::bail!("IDL types cannot be Unit ()"),
             TypeKind::Unknown => {
-                anyhow::bail!("Can only convert known types to IDL type")
+                anyhow::bail!("Can only convert known types to IDL type. You are using forked Shank. Type: {:?}", rust_ty)
             }
         };
         Ok(idl_ty)

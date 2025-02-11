@@ -403,6 +403,10 @@ pub fn resolve_rust_ty(
 fn ident_to_kind(ident: &Ident, arguments: &PathArguments) -> TypeKind {
     let ident_str = ident.to_string();
 
+    /*  if ident_str == "Decimal" {
+        eprintln!("ident: {:#?}, arguments: {:#?}", ident, arguments);
+    } */
+
     match arguments {
         // Non Composite Types
         PathArguments::None => {
@@ -511,10 +515,10 @@ fn ident_to_kind(ident: &Ident, arguments: &PathArguments) -> TypeKind {
                                 (Err(_), Err(_)) => vec![],
                             };
 
-                            let composite = if ident == "HashMap" {
-                                Composite::HashMap
-                            } else {
-                                Composite::BTreeMap
+                            let composite = match ident {
+                                "HashMap" => Composite::HashMap,
+                                "BTreeMap" => Composite::BTreeMap,
+                                _ => unreachable!(),
                             };
                             TypeKind::Composite(composite, inners)
                         }
@@ -526,6 +530,24 @@ fn ident_to_kind(ident: &Ident, arguments: &PathArguments) -> TypeKind {
                             )
                         }
                     },
+                    (
+                        GenericArgument::Const(_), // First param is const precision
+                        GenericArgument::Type(ty), // Second param is the value type
+                    ) if ident_str == "Decimal" => {
+                        eprintln!("Resolving Decimal type");
+                        match resolve_rust_ty(
+                            ty,
+                            RustTypeContext::CollectionItem,
+                        ) {
+                            Ok(inner) => TypeKind::Composite(
+                                Composite::Decimal,
+                                vec![inner],
+                            ),
+                            Err(_) => {
+                                TypeKind::Composite(Composite::Decimal, vec![])
+                            }
+                        }
+                    }
                     _ => TypeKind::Unknown,
                 },
                 _ => {

@@ -283,6 +283,7 @@ pub enum Composite {
     BTreeMap,
     HashSet,
     BTreeSet,
+    Decimal,
     Custom(String),
 }
 
@@ -297,6 +298,7 @@ impl Debug for Composite {
             Composite::BTreeMap => write!(f, "Composite::BTreeMap"),
             Composite::HashSet => write!(f, "Composite::HashSet"),
             Composite::BTreeSet => write!(f, "Composite::BTreeSet"),
+            Composite::Decimal => write!(f, "Composite::Decimal"),
             Composite::Custom(name) => {
                 write!(f, "Composite::Custom(\"{}\")", name)
             }
