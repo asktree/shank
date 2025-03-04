@@ -40,3 +40,7 @@ pub struct AccountWithIdlType {
     /// A direct enum field for comparison
     pub enum_as_enum: TestEnum,
 }
+
+// Notes: This test does not check:
+// - The ability to reference a path (like std::string::String)
+// - Parsing failure when the direct type is not found
