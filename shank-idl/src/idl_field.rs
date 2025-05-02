@@ -52,7 +52,7 @@ pub fn auto_docs(
 ) -> Option<Vec<String>> {
     match &rust_ty.kind {
         TypeKind::Composite(Composite::Decimal(p), _) => {
-            Some(vec![format!("@amount decimals={}", p)])
+            Some(vec![format!("decimals={}", p)])
         }
         _ => None,
     }
