@@ -5,7 +5,10 @@ use shank_macro_impl::parsed_enum::{
     ParsedEnumVariant, ParsedEnumVariantField,
 };
 
-use crate::{idl_field::IdlField, idl_type::IdlType};
+use crate::{
+    idl_field::{auto_docs, IdlField},
+    idl_type::IdlType,
+};
 use anyhow::{Error, Result};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -43,6 +46,7 @@ impl TryFrom<ParsedEnumVariant> for IdlEnumVariant {
                     name: name.to_string(),
                     ty,
                     attrs: None,
+                    docs: auto_docs(&field.rust_type),
                 }),
                 None => tuple_fields.push(ty),
             }

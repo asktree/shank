@@ -8,7 +8,10 @@ use shank_macro_impl::instruction::{
     InstructionVariantFields,
 };
 
-use crate::{idl_field::IdlField, idl_type::IdlType};
+use crate::{
+    idl_field::{auto_docs, IdlField},
+    idl_type::IdlType,
+};
 
 // -----------------
 // IdlInstructions
@@ -69,6 +72,7 @@ impl TryFrom<InstructionVariant> for IdlInstruction {
                         name: field_name.to_mixed_case(),
                         ty,
                         attrs: None,
+                        docs: auto_docs(field_ty),
                     })
                 }
                 Ok(parsed)
@@ -90,6 +94,7 @@ impl TryFrom<InstructionVariant> for IdlInstruction {
                         name,
                         ty,
                         attrs: None,
+                        docs: auto_docs(field_ty),
                     })
                 }
                 Ok(parsed)
