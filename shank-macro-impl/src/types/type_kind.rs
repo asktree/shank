@@ -332,7 +332,7 @@ pub enum Composite {
     BTreeMap,
     HashSet,
     BTreeSet,
-    Decimal,
+    Decimal(usize),
     Custom(String),
 }
 
@@ -347,7 +347,7 @@ impl Debug for Composite {
             Composite::BTreeMap => write!(f, "Composite::BTreeMap"),
             Composite::HashSet => write!(f, "Composite::HashSet"),
             Composite::BTreeSet => write!(f, "Composite::BTreeSet"),
-            Composite::Decimal => write!(f, "Composite::Decimal"),
+            Composite::Decimal(p) => write!(f, "Composite::Decimal({})", p),
             Composite::Custom(name) => {
                 write!(f, "Composite::Custom(\"{}\")", name)
             }
@@ -364,6 +364,9 @@ impl Hash for Composite {
         match self {
             Composite::Array(size) => {
                 size.hash(state);
+            }
+            Composite::Decimal(p) => {
+                p.hash(state);
             }
             Composite::Custom(s) => {
                 s.hash(state);

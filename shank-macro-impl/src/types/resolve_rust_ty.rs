@@ -541,22 +541,22 @@ fn ident_to_kind(ident: &Ident, arguments: &PathArguments) -> TypeKind {
                         }
                     },
                     (
-                        GenericArgument::Const(_), // First param is const precision
-                        GenericArgument::Type(ty), // Second param is the value type
+                        GenericArgument::Const(expr), // const precision
+                        GenericArgument::Type(ty),    // value type
                     ) if ident_str == "Decimal" => {
-                        eprintln!("Resolving Decimal type");
-                        match resolve_rust_ty(
+                        let precision = len_from_expr(expr)
+                            .expect("Decimal: Failed to parse precision");
+
+                        let inner = resolve_rust_ty(
                             ty,
                             RustTypeContext::CollectionItem,
-                        ) {
-                            Ok(inner) => TypeKind::Composite(
-                                Composite::Decimal,
-                                vec![inner],
-                            ),
-                            Err(_) => {
-                                TypeKind::Composite(Composite::Decimal, vec![])
-                            }
-                        }
+                        );
+                        let inners = inner.map_or_else(|_| vec![], |t| vec![t]);
+
+                        TypeKind::Composite(
+                            Composite::Decimal(precision),
+                            inners,
+                        )
                     }
                     _ => TypeKind::Unknown,
                 },
