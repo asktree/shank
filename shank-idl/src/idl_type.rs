@@ -164,7 +164,7 @@ impl TryFrom<RustType> for IdlType {
                         )
                     }
                 },
-                Composite::Decimal(precision) => {
+                Composite::Decimal(_precision) => {
                     // Decimal<const P: u8, T> where T: Copy + PartialEq + Eq + Debug
                     // We only care about the inner type (second generic parameter)
                     if inners.len() == 1 {
